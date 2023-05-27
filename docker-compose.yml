@@ -1,0 +1,13 @@
+version: '3.3'
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=root
+    ports:
+      - 5433:5432
+    volumes:
+      - G:/Desarrollos/db-docker/postgres:/var/lib/postgresql/data
