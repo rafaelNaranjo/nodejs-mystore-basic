@@ -1,6 +1,7 @@
 require("reflect-metadata");
 const typeorm = require("typeorm");
 const {Product} = require("./../products/entities/product.entity");
+const DbExceptions = require("./../exceptions/db.exceptions");
 
 class DataSourceStore {
     constructor() {
@@ -29,6 +30,7 @@ class DataSourceStore {
         }
     };
     async getRepository(name){
+        if(!this.connection) throw new DbExceptions("Connections is not initialized");
         return await this.connection.getRepository(name);
     };
 }

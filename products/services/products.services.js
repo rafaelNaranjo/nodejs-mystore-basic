@@ -1,6 +1,6 @@
-const {faker} = require("@faker-js/faker");
 const boom = require('@hapi/boom');
 const ProductRepository = require("../repository/product.repository");
+const {Between} = require("typeorm");
 
 class ProductsServices{
 
@@ -8,16 +8,21 @@ class ProductsServices{
         this.productRepository = new ProductRepository()
     }
 
-    async create(data){
-        const newProduct = {
-            id: faker.string.uuid(),
-            ...data
-        }
-        this.products.push(newProduct);
-        return newProduct;
+    async create(product){
+        return this.productRepository.save(product);
     }
-    async find(){
-        return await this.productRepository.findAll();
+    async find(valuesfilter){
+        const {id, name, pricemin=0, pricemax=100000, limit:take, offset:skip} = valuesfilter;
+        const filter = {
+            where: {
+                id,
+                name,
+                price: Between(pricemin, pricemax)
+            },
+            take,
+            skip
+        }
+        return await this.productRepository.findAll(filter);
     }
 
     async findOne(id){
@@ -32,24 +37,11 @@ class ProductsServices{
     }
 
     async update(id, changes){
-        const index = this.products.findIndex(item=> item.id === id);
-        if (index === -1) {
-            throw boom.notFound('product not found');
-        }
-        this.products[index] = {
-            ...this.products[index],
-            ...changes
-        }
-        return this.products[index];
+        return this.productRepository.update(id, changes);
     }
 
     async delete(id){
-        const index = this.products.findIndex(item=> item.id === id);
-        if (index === -1) {
-            throw boom.notFound('product not found');
-        }
-        this.products.splice(index,1);
-        return { id };
+        return await this.productRepository.delete(id);
     }
 
 }
