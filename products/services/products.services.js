@@ -1,26 +1,11 @@
 const {faker} = require("@faker-js/faker");
 const boom = require('@hapi/boom');
+const ProductRepository = require("../repository/product.repository");
 
 class ProductsServices{
 
     constructor() {
-        this.products = [];
-        this.generate();
-    }
-
-    generate() {
-        const limit = 100 ;
-        if(this.products.length>0) return;
-        for ( let i = 0; i < limit; i++){
-            this.products.push({
-                id: faker.string.uuid(),
-                name: faker.commerce.productName(),
-                description: faker.commerce.productDescription(),
-                price: parseInt(faker.commerce.price(),10),
-                image: faker.image.url(),
-                isBlock: faker.datatype.boolean()
-            })
-        }
+        this.productRepository = new ProductRepository()
     }
 
     async create(data){
@@ -32,11 +17,11 @@ class ProductsServices{
         return newProduct;
     }
     async find(){
-        return this.products ;
+        return await this.productRepository.findAll();
     }
 
     async findOne(id){
-        const product = this.products.find(item=> item.id === id);
+        const product = await this.productRepository.findOne(id);
         if (!product) {
             throw boom.notFound('product not found');
         }
