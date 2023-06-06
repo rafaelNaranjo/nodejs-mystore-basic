@@ -6,10 +6,12 @@ services:
     env_file:
       - .env
     environment:
-      - POSTGRES_DB=${APP}
-      - POSTGRES_USER=${USER_DB}
-      - POSTGRES_PASSWORD=${PASSWORD_DB}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     ports:
-      - 5433:5432
+      - ${DB_PORT}:5432
     volumes:
       - G:/Desarrollos/db-docker/postgres:/var/lib/postgresql/data
+      - ./script_init/tables.sql:/docker-entrypoint-initdb.d/tables.sql
+      - ./script_init/insert_products.sql:/docker-entrypoint-initdb.d/inserts_products.sql

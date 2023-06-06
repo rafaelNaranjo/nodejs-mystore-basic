@@ -10,7 +10,6 @@ class DataSourceStore {
     }
     async generateConnection(){
         const conn =  await new typeorm.DataSource({
-            name: 'dataSource',
             type: process.env.DB_TYPE,
             host: process.env.DB_HOST,
             port: process.env.DB_PORT,

@@ -1,6 +1,6 @@
 const boom = require('@hapi/boom');
 const ProductRepository = require("../repository/product.repository");
-const {Between} = require("typeorm");
+const {Between, ILike} = require("typeorm");
 
 class ProductsServices{
 
@@ -16,7 +16,7 @@ class ProductsServices{
         const filter = {
             where: {
                 id,
-                name,
+                name: ILike(`%${name}%`),
                 price: Between(pricemin, pricemax)
             },
             take,
